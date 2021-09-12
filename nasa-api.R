@@ -11,7 +11,7 @@ library(jsonlite)
 
 # 1. Build the url for calling the api. Get your api key at https://api.nasa.gov/
 # General rule: do not to share your api keys with others or make them public. 
-my_key <- "NSpYslIVsGYmPIAkqkBYgR6cQrfldI1Q1JCPgeym"
+my_key <- "INSERTKEYHERE"
   
 url <- paste0('https://api.nasa.gov/techtransfer/patent/?engine&api_key=', my_key)
 
