@@ -150,42 +150,52 @@ sorted_lds <- arrange(lex_diversity_score, by=desc(TTR))
 View(sorted_lds)
 
 
-## Practice.
+## VI. Keyness: Compare subsets of a corpus to a reference to compare word usage differences.
 
-# 22. Practice. Construct a quanteda corpus for Ronald Reagan's speeches using corpus_subset()
-reagan_corpus <- corpus_subset(docs_corp, name=="ronald reagan")
+# 22. Create a corpus subset and tokens of Obama's and Trump's speeches:
+ot_tokens <- docs_corp %>%
+  corpus_subset(name %in%
+                  c("barack obama", "donald trump")) %>%
+  tokens(remove_punct = TRUE, remove_numbers = TRUE) %>%
+  tokens_remove(stopwords("en")) %>%
+  tokens_tolower() %>%
+  tokens_wordstem() 
+
+# 23. Create a dfm
+grouped_dfm <- ot_tokens %>%
+  dfm() 
+
+# 24. Group dfm according to the name variable and run the textplot keyness functions
+grouped_dfm %>%
+  dfm_group(., groups = name) %>%
+  textstat_keyness(target = 'donald trump') %>%
+  textplot_keyness(n=10, color=c("darkred", "darkblue"), labelsize=3)
 
 
-# 23. Practice. Tokenize the Reagan corpus. Remove stopwords, numbers, and convert to lowercase.
-reagan_toks <- tokens(reagan_corpus, remove_numbers = TRUE) %>%
-              tokens_remove(reagan_toks, pattern = stopwords("english"), padding=TRUE) %>%
-              tokens_tolower(reagan_toks)
-
-reagan_toks
-
-# 24. Practice. Look at term collocations (2 terms and 3 terms) using the tokens object.
-reagan_coll_2 <- textstat_collocations(reagan_toks, method = "lambda", size = 2, min_count = 2,
-                                       smoothing = 0.5)
-View(reagan_coll_2)
-
-
-reagan_coll_3 <- textstat_collocations(reagan_toks, method = "lambda", size = 3, min_count = 2,
-                                       smoothing = 0.5)
-
-View(reagan_coll_3)
-
+# 25. Practice. Select two other presidents (or documents) and compare word usage using textplot_keyness functions.
+docs_corp %>%
+  corpus_subset(name %in%
+                  c("lyndon b johnson", "ronald reagan")) %>%
+  tokens(remove_punct = TRUE, remove_numbers = TRUE) %>%
+  tokens_remove(stopwords("en")) %>%
+  tokens_tolower() %>%
+  tokens_wordstem() %>%
+  dfm() %>%
+  dfm_group(., groups = name) %>%
+  textstat_keyness(target = 'ronald reagan') %>%
+  textplot_keyness(n=10, color=c("darkred", "darkblue"), labelsize=3)
 
 ## Homework Practice: Case Study
 # A researcher wants to create a corpus of speeches from the years 1992-2020 and examine the following: 
 # The most frequent 2-term collocations in the corpus
 # Lexical dispersion plot of the bigram "social_security" (for this you will need to tokenize and create bigrams)
 
-# 27. Subset the corpus using corpus_subset(corpus, year >= 1992 & year <= 2020)
+# 26. Subset the corpus using corpus_subset(corpus, year >= 1992 & year <= 2020)
 corpus9220 <- corpus_subset(docs_corp, year >= 1992 & year <= 2020)
 corpus9220
 
 
-# 28. Tokenize and clean tokens using function chaining (see step 25):
+# 27. Tokenize and clean tokens using function chaining (see step 25):
 speeches9220_toks <- corpus9220 %>%
   tokens(., remove_numbers = TRUE) %>%
   tokens_remove(., pattern = stopwords("english"), padding=TRUE) %>%
@@ -193,11 +203,11 @@ speeches9220_toks <- corpus9220 %>%
 
 speeches9220_toks
 
-# 29. Split tokens into bigrams
+# 28. Split tokens into bigrams
 bigrams9220 <- tokens_ngrams(speeches9220_toks, n=2)
 
-# 30. Create a kwic list of the bigrams
+# 29. Create a kwic list of the bigrams
 socialsec_kwic <- kwic(bigrams9220, pattern="social_security") 
 
-# 31. Create a lexical dispersion plot using the kwic
+# 30. Create a lexical dispersion plot using the kwic
 textplot_xray(socialsec_kwic) 
