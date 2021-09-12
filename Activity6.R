@@ -132,7 +132,6 @@ fdr_war_kwic <-
 # 19. Practice. Create a lexical dispersion plot from the FDR kwic list you just created.
 
 
-
 ## V. Lexical diversity: a measure of how many different words are used in a text
 # Task: Rank the lexical diversity of all of the SOTU speeches
 ##### Setup for this task from Activity 5:
@@ -155,21 +154,29 @@ sorted_lds <- arrange(lex_diversity_score, by=desc(TTR))
 View(sorted_lds)
 
 
-## Practice.
+## VI. Keyness: Compare subsets of a corpus to a reference to compare word usage differences.
 
-# 22. Practice. Construct a quanteda corpus for Ronald Reagan's speeches using corpus_subset()
-reagan_corpus <- 
+# 22. Create a corpus subset and tokens of Obama's and Trump's speeches:
+ot_tokens <- docs_corp %>%
+  corpus_subset(name %in%
+                  c("barack obama", "donald trump")) %>%
+    tokens(remove_punct = TRUE, remove_numbers = TRUE) %>%
+    tokens_remove(stopwords("en")) %>%
+    tokens_tolower() %>%
+    tokens_wordstem() 
+
+# 23. Create a dfm
+grouped_dfm <- ot_tokens %>%
+    dfm() 
+
+# 24. Group dfm according to the name variable and run the textplot keyness functions
+grouped_dfm %>%
+    dfm_group(., groups = name) %>%
+    textstat_keyness(target = 'donald trump') %>%
+    textplot_keyness(n=10, color=c("darkred", "darkblue"), labelsize=3)
 
 
-# 23. Practice. Tokenize the Reagan corpus. Remove stopwords, numbers, and convert to lowercase.
-reagan_toks <- 
-
-
-# 24. Practice. Look at term collocations (2 terms and 3 terms) using the tokens object.
-reagan_coll_2 <- 
-
-reagan_coll_3 <- 
-
+# 25. Practice. Select two other presidents (or documents) and compare word usage using textplot_keyness functions.
 
 
 
@@ -180,20 +187,20 @@ reagan_coll_3 <-
 # The most frequent 2-term collocations in the corpus
 # Lexical dispersion plot of the bigram "social_security" (for this you will need to tokenize and create bigrams)
 
-# 27. Subset the corpus using corpus_subset(corpus, year >= 1992 & year <= 2020)
+# 26. Subset the corpus using corpus_subset(corpus, year >= 1992 & year <= 2020)
 corpus9220 <- 
 
 
-# 28. Tokenize and clean tokens using function chaining (see step 25):
+# 27. Tokenize and clean tokens using function chaining (see step 25):
 speeches9220_toks <- 
   
   
 
-# 29. Split tokens into bigrams
+# 28. Split tokens into bigrams
 bigrams9220 <- 
 
-# 30. Create a kwic list of the bigrams
+# 29. Create a kwic list of the bigrams
 socialsec_kwic <- 
 
-# 31. Create a lexical dispersion plot using the kwic
+# 30. Create a lexical dispersion plot using the kwic
 
